@@ -14,10 +14,22 @@ do
 
 	echo -n 'Greens: '
 	read GREENS
+	cmd='grep -Ei ^[A-Z]{5}$ words.txt | grep -Ei '$GREENS
 
 	echo -n 'Grays: '
 	read GRAYS
-	
+	cmd=$cmd' | grep -vEi ['$GRAYS']'
+
+	echo -n 'Yellows: '
+	read YELLOWS
+	if ! [ -z $YELLOWS ]
+	then
+		for ch in $(echo $YELLOWS | grep -o .)
+		do
+			cmd=$cmd' | grep '$ch
+		done
+	fi
+
 	echo -n 'Guess = '
-	grep -Ei '^[A-Z]{5}$' words.txt | grep -Ei "$GREENS" | grep -vEi "[$GRAYS]" | head -1
+	eval "$cmd | head -1"
 done
